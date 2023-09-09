@@ -22,31 +22,51 @@ Promise.all(
     persons = response[1];
     specializations = response[2];
 
-    getInfo.call(persons);
+    getFigmaDesigner();
+    getReactDevOp();
+    isAdults();
   })
 
 
 function getInfo() {
-  this.forEach(item => {
-    const {firstName, lastName, locationId} = item.personal;
+    const {firstName, lastName, locationId} = this.personal;
     const city = cities.find(city => {
       return city.id === locationId;
     })
     console.log(`${firstName} ${lastName}, ${city.name}`)
-  })
 
-  const figmaDesigners = this.filter(item => {
+}
+
+function getFigmaDesigner() {
+  const figmaDesigners = persons.filter(item => {
     return item.skills.find(category => {
       return category.name.toLowerCase() === figmaSkill;
     })
   })
-  console.log(figmaDesigners);
+  console.log('Владеет Figma: ')
+  figmaDesigners.forEach(designer => {
+    getInfo.call(designer);
+  })
+}
 
-  const reactDeveloper = this.find(item => {
+function getReactDevOp() {
+  const reactDeveloper = persons.find(item => {
     return item.skills.find(category => {
       return category.name.toLowerCase() === reactSkill;
     })
   })
-  console.log(reactDeveloper)
-
+  console.log('Владеет React: ')
+  getInfo.call(reactDeveloper);
 }
+
+function isAdults() {
+  const personAge = persons.every(item => {
+    const currentDate = new Date();
+    const dateParts = item.personal.birthday.split('.');
+    const birthday = new Date(+dateParts[2], +dateParts[1], +dateParts[0]);
+    const age = (currentDate.getTime() - birthday.getTime())/(1000*60*60*24*365);
+    return age > 18;
+  })
+  console.log(personAge)
+}
+
