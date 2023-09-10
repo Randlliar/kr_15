@@ -22,19 +22,20 @@ Promise.all(
     persons = response[1];
     specializations = response[2];
 
-    getFigmaDesigner();
-    getReactDevOp();
-    isAdults();
+    // getFigmaDesigner();
+    // getReactDevOp();
+    // isAdults();
+    // getBackEndDevOps();
+    getDesignerLevel();
   })
 
 
 function getInfo() {
-    const {firstName, lastName, locationId} = this.personal;
-    const city = cities.find(city => {
-      return city.id === locationId;
-    })
-    console.log(`${firstName} ${lastName}, ${city.name}`)
-
+  const {firstName, lastName, locationId} = this.personal;
+  const city = cities.find(city => {
+    return city.id === locationId;
+  })
+  console.log(`${firstName} ${lastName}, ${city.name}`)
 }
 
 function getFigmaDesigner() {
@@ -64,9 +65,58 @@ function isAdults() {
     const currentDate = new Date();
     const dateParts = item.personal.birthday.split('.');
     const birthday = new Date(+dateParts[2], +dateParts[1], +dateParts[0]);
-    const age = (currentDate.getTime() - birthday.getTime())/(1000*60*60*24*365);
+    //Нашел 2 способа находить возраст человека. Какой из них лучше?
+    // const age = (currentDate.getTime() - birthday.getTime())/(1000*60*60*24*365);
+    const age = new Date(currentDate - birthday).getFullYear() - new Date(0).getFullYear();
     return age > 18;
   })
-  console.log(personAge)
+  console.log('Всем есть 18?: ')
+  console.log(personAge);
 }
 
+function getSalary(obj) {
+  const salary = obj.request.find(item => {
+    return item.name.toLowerCase() === 'зарплата';
+  })
+  console.log(salary)
+  return salary.value;
+}
+
+function getBackEndDevOps() {
+  const city = cities.find(city => {
+    return city.name.toLowerCase() === "москва";
+  })
+
+  const specialization = specializations.find(specialization => {
+    return specialization.name.toLowerCase() === "backend";
+  })
+
+  const fullDay = persons.find(person => {
+    return person.request.find(item => {
+      return item.name === 'Тип занятости' && item.value === 'Полная';
+    })
+  })
+
+  const backEndDevOps = persons.filter(item => {
+    return item.personal.locationId === city.id
+      && item.personal.specializationId === specialization.id
+      && item.request.name === fullDay.request.name;
+  })
+  console.log(backEndDevOps)
+
+  backEndDevOps.sort(function (a, b) {
+    return getSalary(a) - getSalary(b);
+  })
+  console.log(backEndDevOps)
+}
+
+function getDesignerLevel() {
+
+  const designers = persons.filter(item => {
+    const figmaPhotoshopSkills = item.skills.filter(skill => {
+      return (skill.name.toLowerCase() === 'figma' || skill.name.toLowerCase() === 'photoshop') && skill.level >= 6 ;
+    })
+    return figmaPhotoshopSkills.length === 2;
+  })
+  console.log(designers)
+}
