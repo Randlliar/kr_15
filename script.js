@@ -25,9 +25,9 @@ Promise.all(
     // getFigmaDesigner();
     // getReactDevOp();
     // isAdults();
-    // getBackEndDevOps();
+    getBackEndDevOps();
     // getDesignerLevel();
-    getDevOpsTeam();
+    // getDevOpsTeam();
   })
 
 
@@ -79,7 +79,7 @@ function getSalary(obj) {
   const salary = obj.request.find(item => {
     return item.name.toLowerCase() === 'зарплата';
   })
-  console.log(salary)
+  // console.log(salary)
   return salary.value;
 }
 
@@ -92,17 +92,15 @@ function getBackEndDevOps() {
     return specialization.name.toLowerCase() === "backend";
   })
 
-  const fullDay = persons.find(person => {
-    return person.request.find(item => {
-      return item.name === 'Тип занятости' && item.value === 'Полная';
+  const fullDay = persons.filter(person => {
+    return  person.request.find(item => {
+      return item.value === 'Полная';
     })
   })
 
-
-  const backEndDevOps = persons.filter(item => {
+  const backEndDevOps = fullDay.filter(item => {
     return item.personal.locationId === city.id
       && item.personal.specializationId === specialization.id
-      && item.request.name === fullDay.request.name;
   })
   console.log(backEndDevOps)
 
@@ -131,6 +129,7 @@ function getRating(obj) {
 }
 
 function getSkill(item, searchSkill) {
+  console.log(item.skills)
   return item.skills.find(skill => {
     return skill.name.toLowerCase() === searchSkill;
   });
@@ -141,14 +140,14 @@ function skillsLevel(skill) {
     return getSkill(item, skill)
   }).map(item => {
     return {
-      ...item, // деструктуризация
-      [skill]: getSkill(item, skill).level // делаешь новое свойство у обьекта персон, чисто для удобства
+      ...item,
+      [skill]: getSkill(item, skill).level
     }
   });
   console.log(filteredPersons)
 
-  filteredPersons.sort((firstPerson, secondPerson) => {
-    return secondPerson[skill] - firstPerson[skill];
+  filteredPersons.sort((firstPerson, nextPerson) => {
+    return nextPerson[skill] - firstPerson[skill];
   })
 
   return filteredPersons[0];
