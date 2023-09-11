@@ -26,7 +26,8 @@ Promise.all(
     // getReactDevOp();
     // isAdults();
     // getBackEndDevOps();
-    getDesignerLevel();
+    // getDesignerLevel();
+    getDevOpsTeam();
   })
 
 
@@ -97,6 +98,7 @@ function getBackEndDevOps() {
     })
   })
 
+
   const backEndDevOps = persons.filter(item => {
     return item.personal.locationId === city.id
       && item.personal.specializationId === specialization.id
@@ -114,9 +116,52 @@ function getDesignerLevel() {
 
   const designers = persons.filter(item => {
     const figmaPhotoshopSkills = item.skills.filter(skill => {
-      return (skill.name.toLowerCase() === 'figma' || skill.name.toLowerCase() === 'photoshop') && skill.level >= 6 ;
+      return (skill.name.toLowerCase() === 'figma' || skill.name.toLowerCase() === 'photoshop') && skill.level >= 6;
     })
     return figmaPhotoshopSkills.length === 2;
   })
   console.log(designers)
+}
+
+function getRating(obj) {
+  const rating = obj.skills.find(item => {
+    return item.name.toLowerCase() === 'figma' || item.name.toLowerCase() === 'angular' || item.name.toLowerCase() === 'go';
+  })
+  return rating.level;
+}
+
+function getDevOpsTeam() {
+  const designers = persons.filter(item => {
+    return item.skills.find(skill => {
+      return skill.name.toLowerCase() === 'figma';
+    });
+  });
+
+  designers.sort(function (a, b) {
+    return getRating(b) - getRating(a);
+  });
+
+  const frontEndDevOp = persons.filter(item => {
+    return  item.skills.find(skill => {
+      return skill.name.toLowerCase() === 'angular';
+    })
+  })
+
+  frontEndDevOp.sort(function (a, b) {
+    return getRating(b) - getRating(a);
+  });
+
+  const backEndDevOp = persons.filter(item => {
+    return item.skills.find(skill => {
+      return skill.name.toLowerCase() === 'go';
+    })
+  })
+
+  backEndDevOp.sort(function (a, b) {
+    return getRating(b) - getRating(a);
+  });
+
+  getInfo.call(designers[0]);
+  getInfo.call(frontEndDevOp[0]);
+  getInfo.call(backEndDevOp[0]);
 }
