@@ -130,38 +130,38 @@ function getRating(obj) {
   return rating.level;
 }
 
+function getSkill(item, searchSkill) {
+  return item.skills.find(skill => {
+    return skill.name.toLowerCase() === searchSkill;
+  });
+}
+
+function skillsLevel(skill) {
+  const filteredPersons = persons.filter(item => {
+    return getSkill(item, skill)
+  }).map(item => {
+    return {
+      ...item, // деструктуризация
+      [skill]: getSkill(item, skill).level // делаешь новое свойство у обьекта персон, чисто для удобства
+    }
+  });
+  console.log(filteredPersons)
+
+  filteredPersons.sort((firstPerson, secondPerson) => {
+    return secondPerson[skill] - firstPerson[skill];
+  })
+
+  return filteredPersons[0];
+}
+
 function getDevOpsTeam() {
-  const designers = persons.filter(item => {
-    return item.skills.find(skill => {
-      return skill.name.toLowerCase() === 'figma';
-    });
-  });
 
-  designers.sort(function (a, b) {
-    return getRating(b) - getRating(a);
-  });
+const designer = skillsLevel('figma');
+const frontEndDevOp = skillsLevel('angular');
+const backEndDevOp = skillsLevel('go');
 
-  const frontEndDevOp = persons.filter(item => {
-    return  item.skills.find(skill => {
-      return skill.name.toLowerCase() === 'angular';
-    })
-  })
 
-  frontEndDevOp.sort(function (a, b) {
-    return getRating(b) - getRating(a);
-  });
-
-  const backEndDevOp = persons.filter(item => {
-    return item.skills.find(skill => {
-      return skill.name.toLowerCase() === 'go';
-    })
-  })
-
-  backEndDevOp.sort(function (a, b) {
-    return getRating(b) - getRating(a);
-  });
-
-  getInfo.call(designers[0]);
-  getInfo.call(frontEndDevOp[0]);
-  getInfo.call(backEndDevOp[0]);
+  getInfo.call(designer);
+  getInfo.call(frontEndDevOp);
+  getInfo.call(backEndDevOp);
 }
