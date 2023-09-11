@@ -25,9 +25,9 @@ Promise.all(
     // getFigmaDesigner();
     // getReactDevOp();
     // isAdults();
-    getBackEndDevOps();
+    // getBackEndDevOps();
     // getDesignerLevel();
-    // getDevOpsTeam();
+    getDevOpsTeam();
   })
 
 
@@ -93,12 +93,12 @@ function getBackEndDevOps() {
   })
 
   const fullDay = persons.filter(person => {
-    return  person.request.find(item => {
+    return person.request.find(item => {
       return item.value === 'Полная';
     })
   })
 
-  const backEndDevOps = fullDay.filter(item => {
+  const backEndDevOps = persons.filter(item => {
     return item.personal.locationId === city.id
       && item.personal.specializationId === specialization.id
   })
@@ -128,39 +128,38 @@ function getRating(obj) {
   return rating.level;
 }
 
-function getSkill(item, searchSkill) {
-  console.log(item.skills)
-  return item.skills.find(skill => {
-    return skill.name.toLowerCase() === searchSkill;
-  });
-}
-
-function skillsLevel(skill) {
-  const filteredPersons = persons.filter(item => {
-    return getSkill(item, skill)
-  }).map(item => {
-    return {
-      ...item,
-      [skill]: getSkill(item, skill).level
-    }
-  });
-  console.log(filteredPersons)
-
-  filteredPersons.sort((firstPerson, nextPerson) => {
-    return nextPerson[skill] - firstPerson[skill];
+function getDevOpsTeam() {
+  const designers = persons.filter(item => {
+    return item.skills.find(skill => {
+      return skill.name.toLowerCase() === 'figma';
+    });
   })
 
-  return filteredPersons[0];
-}
+  designers.sort(function (a, b) {
+    return getRating(b) - getRating(a);
+  })
 
-function getDevOpsTeam() {
+  const frontEndDevOp = persons.filter(item => {
+    return item.skills.find(skill => {
+      return skill.name.toLowerCase() === 'angular';
+    })
+  })
 
-const designer = skillsLevel('figma');
-const frontEndDevOp = skillsLevel('angular');
-const backEndDevOp = skillsLevel('go');
+  frontEndDevOp.sort(function (a, b) {
+    return getRating(b) - getRating(a);
+  });
 
+  const backEndDevOp = persons.filter(item => {
+    return item.skills.find(skill => {
+      return skill.name.toLowerCase() === 'go';
+    })
+  })
 
-  getInfo.call(designer);
-  getInfo.call(frontEndDevOp);
-  getInfo.call(backEndDevOp);
+  backEndDevOp.sort(function (a, b) {
+    return getRating(b) - getRating(a);
+  });
+
+  getInfo.call(designers[0]);
+  getInfo.call(frontEndDevOp[0]);
+  getInfo.call(backEndDevOp[0]);
 }
