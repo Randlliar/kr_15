@@ -25,9 +25,9 @@ Promise.all(
     // getFigmaDesigner();
     // getReactDevOp();
     // isAdults();
-    // getBackEndDevOps();
+    getBackEndDevOps();
     // getDesignerLevel();
-    getDevOpsTeam();
+    // getDevOpsTeam();
   })
 
 
@@ -98,7 +98,7 @@ function getBackEndDevOps() {
     })
   })
 
-  const backEndDevOps = persons.filter(item => {
+  const backEndDevOps = fullDay.filter(item => {
     return item.personal.locationId === city.id
       && item.personal.specializationId === specialization.id
   })
